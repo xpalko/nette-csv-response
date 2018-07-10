@@ -43,7 +43,7 @@
 	},
     "autoload": {
         "psr-4": {
-            "OHWeb\\Application\\Responses\\": "src/"
+            "XSuchy09\\Application\\Responses\\": "src/"
         }
     }
 }

@@ -2,7 +2,7 @@ CSV Response
 =============
 
 Install:
-```
+```bat
 composer require xsuchy09/nette-csv-response
 ```
 
@@ -11,17 +11,17 @@ Use:
 ```php
 class SomePresenter extends BasePresenter
 {
-    public function actionDefault()
-    {
-        $data = [
-            [ 'name' => 'George', 'age' => 15, 'grade' => 2, ],
-            [ 'name' => 'Jack', 'age' => 17, 'grade' => 4, ],
-            [ 'name' => 'Mary', 'age' => 17, 'grade' => 1, ],
-        ];
+	public function actionDefault()
+	{
+		$data = [
+			[ 'name' => 'George', 'age' => 15, 'grade' => 2, ],
+			[ 'name' => 'Jack', 'age' => 17, 'grade' => 4, ],
+			[ 'name' => 'Mary', 'age' => 17, 'grade' => 1, ],
+		];
 
-        $response = new \Nette\Application\Responses\CsvResponse($data, 'students.csv');
-        $this->sendResponse( $response );
-    }
+		$response = new \Nette\Application\Responses\CsvResponse($data, 'students.csv');
+		$this->sendResponse( $response );
+	}
 }
 ```
 
@@ -32,7 +32,7 @@ use Nette\Application\Responses\CsvResponse;
 
 $response
 	->setGlue( CsvResponse::SEMICOLON )
-	->setOutputCharset( 'utf8' )
+	->setOutputCharset( 'utf-8' )
 	->setContentType( 'application/csv' )
 	->setHeadingFormatter( 'strtoupper' )
 	->setDataFormatter( 'trim' )
