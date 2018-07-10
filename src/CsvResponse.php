@@ -19,7 +19,7 @@ use Traversable;
  *
  * @package OHWeb\Application\Responses
  */
-class CsvResponse extends Nette\Object implements Nette\Application\IResponse
+class CsvResponse extends Nette\SmartObject implements Nette\Application\IResponse
 {
 
 	/** standard glues */
