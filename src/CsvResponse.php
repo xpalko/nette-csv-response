@@ -15,12 +15,13 @@ use Traversable;
 
 /**
  * CSV download response.
- * Under New BSD license.
  *
- * @package OHWeb\Application\Responses
+ * @package XSuchy09\Application\Responses
  */
-class CsvResponse extends Nette\SmartObject implements Nette\Application\IResponse
+class CsvResponse implements Nette\Application\IResponse
 {
+	
+	use Nette\SmartObject;
 
 	/** standard glues */
 	const COMMA = ',',
