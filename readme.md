@@ -31,10 +31,10 @@ Individual settings example:
 use Nette\Application\Responses\CsvResponse;
 
 $response
-	->setGlue( CsvResponse::SEMICOLON )
-	->setOutputCharset( 'utf-8' )
-	->setContentType( 'application/csv' )
-	->setHeadingFormatter( 'strtoupper' )
-	->setDataFormatter( 'trim' )
+	->setGlue(CsvResponse::SEMICOLON)
+	->setOutputCharset('utf-8')
+	->setContentType('application/csv')
+	->setHeadingFormatter('mb_strtoupper')
+	->setDataFormatter('trim')
 ;
 ```
