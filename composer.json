@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Nette CSV Response",
     "homepage": "https://github.com/xsuchy09/nette-csv-response",
-    "license": "New BSD",
+    "license": ["MIT", "BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
     "authors": [
 		{
             "name": "Ing. Petr Suchý",
