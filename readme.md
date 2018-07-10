@@ -1,6 +1,11 @@
 CSV Response
 =============
 
+Install:
+```
+composer require xsuchy09/nette-csv-response
+```
+
 Use:
 
 ```php
@@ -27,7 +32,7 @@ use Nette\Application\Responses\CsvResponse;
 
 $response
 	->setGlue( CsvResponse::SEMICOLON )
-	->setOutputCharset( 'cp1250' )
+	->setOutputCharset( 'utf8' )
 	->setContentType( 'application/csv' )
 	->setHeadingFormatter( 'strtoupper' )
 	->setDataFormatter( 'trim' )
