@@ -1,10 +1,15 @@
 {
-    "name": "ohweb/nette-csv-response",
+    "name": "xsuchy09/nette-csv-response",
     "type": "library",
-    "description": "Nette CSV response",
-    "homepage": "https://github.com/ohweb/nette-csv-response",
+    "description": "Nette CSV Response",
+    "homepage": "https://github.com/xsuchy09/nette-csv-response",
     "license": "New BSD",
     "authors": [
+		{
+            "name": "Ing. Petr Suchý",
+            "email": "suchy@wamos.cz",
+            "role": "Developer"
+        },
         {
             "name": "Vladislav Hejda",
             "email": "hejda@vspdata.cz",
