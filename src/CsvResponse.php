@@ -24,12 +24,12 @@ class CsvResponse implements Nette\Application\IResponse
 	use Nette\SmartObject;
 
 	/**
-	 * standard glues
+	 * standard delimiters
 	 */
 	const COMMA = ',',
 			SEMICOLON = ';',
 			TAB = ' ';
-
+	
 	/**
 	 * @var bool
 	 */
@@ -38,7 +38,17 @@ class CsvResponse implements Nette\Application\IResponse
 	/**
 	 * @var string
 	 */
-	protected $glue = self::COMMA;
+	protected $delimiter = self::COMMA;
+	
+	/**
+	 * @var string
+	 */
+	protected $enclosure = '"';
+	
+	/**
+	 * @var string
+	 */
+	protected $escapeChar = '\\';
 
 	/**
 	 * @var string
@@ -91,21 +101,69 @@ class CsvResponse implements Nette\Application\IResponse
 		$this->filename = $filename;
 		$this->addHeading = $addHeading;
 	}
+	
+	/**
+	 * Set value separator. Deprecated, use setDelimiter instead. Just for backward compatibility.
+	 * 
+	 * @deprecated since version 0.2.0
+	 * 
+	 * @param string $glue
+	 * 
+	 * @return CsvResponse
+	 */
+	public function setGlue(string $glue): CsvResponse
+	{
+		return $this->setDelimiter($glue);
+	}
 
 	/**
 	 * Set value separator.
 	 *
-	 * @param string $glue
+	 * @param string $delimiter
 	 * 
 	 * @return CsvResponse
 	 * @throws InvalidArgumentException
 	 */
-	public function setGlue(string $glue): CsvResponse
+	public function setDelimiter(string $delimiter): CsvResponse
 	{
-		if (true === empty($glue) || preg_match('/[\n\r"]/s', $glue) === 1) {
-			throw new InvalidArgumentException(sprintf('%s: glue cannot be an empty or reserved character.', __CLASS__));
+		if (true === empty($delimiter) || preg_match('/[\n\r]/s', $delimiter) === 1 || mb_strlen($delimiter) > 1) {
+			throw new InvalidArgumentException(sprintf('%s: delimiter cannot be an empty or reserved character and must be a single character.', __CLASS__));
 		}
-		$this->glue = $glue;
+		$this->delimiter = $delimiter;
+		return $this;
+	}
+	
+	/**
+	 * Set value enclosure.
+	 *
+	 * @param string $enclosure
+	 * 
+	 * @return CsvResponse
+	 * @throws InvalidArgumentException
+	 */
+	public function setEnclosure(string $enclosure): CsvResponse
+	{
+		if (true === empty($enclosure) || preg_match('/[\n\r]/s', $enclosure) === 1 || mb_strlen($enclosure) > 1) {
+			throw new InvalidArgumentException(sprintf('%s: enclosure cannot be an empty or reserved character and must be a single character.', __CLASS__));
+		}
+		$this->enclosure = $enclosure;
+		return $this;
+	}
+	
+	/**
+	 * Set escape char.
+	 * 
+	 * @param string $escapeChar
+	 * 
+	 * @return CsvResponse
+	 * @throws InvalidArgumentException
+	 */
+	public function setEscapeChar(string $escapeChar): CsvResponse
+	{
+		if (true === empty($escapeChar) || preg_match('/[\n\r]/s', $escapeChar) === 1 || mb_strlen($escapeChar) > 1) {
+			throw new InvalidArgumentException(sprintf('%s: escape char cannot be an empty or reserved character and must be a single character.', __CLASS__));
+		}
+		$this->escapeChar = $escapeChar;
 		return $this;
 	}
 
@@ -228,10 +286,10 @@ class CsvResponse implements Nette\Application\IResponse
 			}
 			if ($n === 0 && $this->addHeading === true) {
 				$header = $this->getRowHeader($row, $recode);
-				fputcsv($buffer, $header, $this->glue);
+				fputcsv($buffer, $header, $this->delimiter, $this->enclosure, $this->escapeChar);
 			}
 			$row = $this->getRowData($row, $recode);
-			fputcsv($buffer, $row, $this->glue);
+			fputcsv($buffer, $row, $this->delimiter, $this->enclosure, $this->escapeChar);
 		}
 		fclose($buffer);
 		$return = ob_get_clean();
