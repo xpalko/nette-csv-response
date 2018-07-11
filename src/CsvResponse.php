@@ -23,7 +23,9 @@ class CsvResponse implements Nette\Application\IResponse
 	
 	use Nette\SmartObject;
 
-	/** standard glues */
+	/**
+	 * standard glues
+	 */
 	const COMMA = ',',
 			SEMICOLON = ';',
 			TAB = ' ';
@@ -100,7 +102,7 @@ class CsvResponse implements Nette\Application\IResponse
 	 */
 	public function setGlue(string $glue): CsvResponse
 	{
-		if (empty($glue) || preg_match('/[\n\r"]/s', $glue)) {
+		if (true === empty($glue) || preg_match('/[\n\r"]/s', $glue) === 1) {
 			throw new InvalidArgumentException(sprintf('%s: glue cannot be an empty or reserved character.', __CLASS__));
 		}
 		$this->glue = $glue;
@@ -192,12 +194,12 @@ class CsvResponse implements Nette\Application\IResponse
 	{
 		$httpResponse->setContentType($this->contentType, $this->outputCharset);
 		$attachment = 'attachment';
-		if (!empty($this->filename)) {
+		if (false === empty($this->filename)) {
 			$attachment .= sprintf('; filename="%s"', $this->filename);
 		}
 		$httpResponse->setHeader('Content-Disposition', $attachment);
 		$data = $this->formatCsv();
-		$httpResponse->setHeader('Content-Length', strlen($data));
+		$httpResponse->setHeader('Content-Length', mb_strlen($data));
 		print $data;
 	}
 
@@ -210,46 +212,25 @@ class CsvResponse implements Nette\Application\IResponse
 	 */
 	protected function formatCsv(): string
 	{
-		if (empty($this->data)) {
+		if (true === empty($this->data)) {
 			return '';
 		}
 		ob_start();
-		$buffer = fopen("php://output", 'w');
+		$buffer = fopen('php://output', 'w');
 		// if output charset is not UTF-8
 		$recode = strcasecmp($this->outputCharset, 'utf-8');
 		foreach ($this->data as $n => $row) {
 			if ($row instanceof Traversable) {
 				$row = iterator_to_array($row);
 			}
-			if (!is_array($row)) {
+			if (false === is_array($row)) {
 				throw new InvalidArgumentException(sprintf('%s: row "%d" must be array or instance of Traversable, "%s" given.', __CLASS__, $n, gettype($row)));
 			}
-			if ($n === 0 && $this->addHeading) {
-				$labels = array_keys($row);
-				if ($this->headingFormatter || $recode) {
-					foreach ($labels as &$label) {
-						if ($this->headingFormatter) {
-							$label = call_user_func(
-									$this->headingFormatter, $label
-							);
-						}
-						if ($recode) {
-							$label = iconv('utf-8', $this->outputCharset . '//TRANSLIT', $label);
-						}
-					}
-				}
-				fputcsv($buffer, $labels, $this->glue);
+			if ($n === 0 && $this->addHeading === true) {
+				$header = $this->getRowHeader($row, $recode);
+				fputcsv($buffer, $header, $this->glue);
 			}
-			if ($this->dataFormatter || $recode) {
-				foreach ($row as &$value) {
-					if ($this->dataFormatter) {
-						$value = call_user_func($this->dataFormatter, $value);
-					}
-					if ($recode) {
-						$value = iconv('utf-8', $this->outputCharset . '//TRANSLIT', $value);
-					}
-				}
-			}
+			$row = $this->getRowData($row, $recode);
 			fputcsv($buffer, $row, $this->glue);
 		}
 		fclose($buffer);
@@ -258,6 +239,54 @@ class CsvResponse implements Nette\Application\IResponse
 			throw new LogicException('Output buffering is not active.');
 		}
 		return $return;
+	}
+	
+	/**
+	 * Get formatted and recoded header (if formatter and recode is set - if not not changed data will be returned).
+	 * 
+	 * @param array $row
+	 * @param int $recode
+	 * 
+	 * @return array
+	 */
+	protected function getRowHeader(array $row, int $recode): array
+	{
+		$labels = array_keys($row);
+		if ($this->headingFormatter !== null || $recode !== 0) {
+			foreach ($labels as &$label) {
+				if ($this->headingFormatter !== null) {
+					$label = call_user_func($this->headingFormatter, $label);
+				}
+				if ($recode !== 0) {
+					$label = iconv('utf-8', $this->outputCharset . '//TRANSLIT', $label);
+				}
+			}
+		}
+		return $labels;
+	}
+	
+	/**
+	 * Get formatted and recoded values (if formatter and recode is set - if not not changed data will be returned).
+	 * 
+	 * @param array $row
+	 * @param int $recode
+	 * 
+	 * @return array
+	 */
+	protected function getRowData(array $row, int $recode): array
+	{
+		if ($this->dataFormatter === null && $recode === 0) {
+			return $row;
+		}
+		foreach ($row as &$value) {
+			if ($this->dataFormatter !== null) {
+				$value = call_user_func($this->dataFormatter, $value);
+			}
+			if ($recode !== 0) {
+				$value = iconv('utf-8', $this->outputCharset . '//TRANSLIT', $value);
+			}
+		}
+		return $row;
 	}
 
 }
