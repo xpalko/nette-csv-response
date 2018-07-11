@@ -34,8 +34,8 @@ use \XSuchy09\Application\Responses\CsvResponse;
 $response
 	->setDelimiter(CsvResponse::SEMICOLON)
 	->setEnclosure('"') // this is default value so not require to call when set to "
-	->setEscapeChar('\\') // this is default value so not require to call when se to \
-	->setOutputCharset('utf-8')
+	->setEscapeChar('\\') // this is default value so not require to call when set to \
+	->setOutputCharset('utf-8') // this is default value so not require to call when set to utf-8
 	->setContentType('application/csv')
 	->setHeadingFormatter('mb_strtoupper')
 	->setDataFormatter('trim')
