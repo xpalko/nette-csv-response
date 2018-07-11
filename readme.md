@@ -31,7 +31,9 @@ Individual settings example:
 use Nette\Application\Responses\CsvResponse;
 
 $response
-	->setGlue(CsvResponse::SEMICOLON)
+	->setDelimiter(CsvResponse::SEMICOLON)
+	->setEnclosure('"') // this is default value so not require to call when set to "
+	->setEscapeChar('\\') // this is default value so not require to call when se to \
 	->setOutputCharset('utf-8')
 	->setContentType('application/csv')
 	->setHeadingFormatter('mb_strtoupper')

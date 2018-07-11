@@ -91,10 +91,10 @@ class CsvResponse implements Nette\Application\IResponse
 	 */
 	public function __construct($data, string $filename = 'output.csv', bool $addHeading = true)
 	{
-		if ($data instanceof Traversable) {
+		if (true === $data instanceof Traversable) {
 			$data = iterator_to_array($data);
 		}
-		if (!is_array($data)) {
+		if (false === is_array($data)) {
 			throw new InvalidArgumentException(sprintf('%s: data must be two dimensional array or instance of Traversable.', __CLASS__));
 		}
 		$this->data = array_values($data);
@@ -204,7 +204,7 @@ class CsvResponse implements Nette\Application\IResponse
 	 */
 	public function setHeadingFormatter(?callable $formatter): CsvResponse
 	{
-		if ($formatter !== null && !is_callable($formatter)) {
+		if ($formatter !== null && false === is_callable($formatter)) {
 			throw new InvalidArgumentException(sprintf('%s: heading formatter must be callable.', __CLASS__));
 		}
 		$this->headingFormatter = $formatter;
@@ -221,7 +221,7 @@ class CsvResponse implements Nette\Application\IResponse
 	 */
 	public function setDataFormatter(?callable $formatter): CsvResponse
 	{
-		if ($formatter !== null && !is_callable($formatter)) {
+		if ($formatter !== null && false === is_callable($formatter)) {
 			throw new InvalidArgumentException(sprintf(': data formatter must be callable.', __CLASS__));
 		}
 		$this->dataFormatter = $formatter;
@@ -278,7 +278,7 @@ class CsvResponse implements Nette\Application\IResponse
 		// if output charset is not UTF-8
 		$recode = strcasecmp($this->outputCharset, 'utf-8');
 		foreach ($this->data as $n => $row) {
-			if ($row instanceof Traversable) {
+			if (true === $row instanceof Traversable) {
 				$row = iterator_to_array($row);
 			}
 			if (false === is_array($row)) {
