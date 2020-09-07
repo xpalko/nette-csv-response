@@ -83,7 +83,7 @@ class CsvResponse implements Nette\Application\IResponse
 	/**
 	 * In accordance with Nette Framework accepts only UTF-8 input. For output @see setOutputCharset().
 	 *
-	 * @param type $data
+	 * @param array|Traversable $data
 	 * @param string $filename
 	 * @param bool $addHeading Whether add first row from data array keys (keys are taken from first row)
 	 * 
@@ -222,7 +222,7 @@ class CsvResponse implements Nette\Application\IResponse
 	public function setDataFormatter(?callable $formatter): CsvResponse
 	{
 		if ($formatter !== null && false === is_callable($formatter)) {
-			throw new InvalidArgumentException(sprintf(': data formatter must be callable.', __CLASS__));
+			throw new InvalidArgumentException(sprintf('%s: data formatter must be callable.', __CLASS__));
 		}
 		$this->dataFormatter = $formatter;
 		return $this;
@@ -257,7 +257,7 @@ class CsvResponse implements Nette\Application\IResponse
 		}
 		$httpResponse->setHeader('Content-Disposition', $attachment);
 		$data = $this->formatCsv();
-		$httpResponse->setHeader('Content-Length', mb_strlen($data));
+		$httpResponse->setHeader('Content-Length', strlen($data));
 		print $data;
 	}
 
@@ -274,7 +274,7 @@ class CsvResponse implements Nette\Application\IResponse
 			return '';
 		}
 		ob_start();
-		$buffer = fopen('php://output', 'w');
+		$buffer = fopen('php://output', 'wb');
 		// if output charset is not UTF-8
 		$recode = strcasecmp($this->outputCharset, 'utf-8');
 		foreach ($this->data as $n => $row) {
