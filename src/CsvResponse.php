@@ -20,16 +20,16 @@ use Traversable;
  */
 class CsvResponse implements Nette\Application\IResponse
 {
-	
+
 	use Nette\SmartObject;
 
 	/**
 	 * standard delimiters
 	 */
 	const COMMA = ',',
-			SEMICOLON = ';',
-			TAB = ' ';
-	
+		SEMICOLON = ';',
+		TAB = ' ';
+
 	/**
 	 * @var bool
 	 */
@@ -39,12 +39,12 @@ class CsvResponse implements Nette\Application\IResponse
 	 * @var string
 	 */
 	protected $delimiter = self::COMMA;
-	
+
 	/**
 	 * @var string
 	 */
 	protected $enclosure = '"';
-	
+
 	/**
 	 * @var string
 	 */
@@ -81,13 +81,14 @@ class CsvResponse implements Nette\Application\IResponse
 	protected $filename;
 
 	/**
-	 * In accordance with Nette Framework accepts only UTF-8 input. For output @see setOutputCharset().
+	 * In accordance with Nette Framework accepts only UTF-8 input. For output @param array|Traversable $data
 	 *
-	 * @param array|Traversable $data
 	 * @param string $filename
-	 * @param bool $addHeading Whether add first row from data array keys (keys are taken from first row)
-	 * 
+	 * @param bool   $addHeading Whether add first row from data array keys (keys are taken from first row)
+	 *
 	 * @throws InvalidArgumentException
+	 * @see setOutputCharset().
+	 *
 	 */
 	public function __construct($data, string $filename = 'output.csv', bool $addHeading = true)
 	{
@@ -101,15 +102,15 @@ class CsvResponse implements Nette\Application\IResponse
 		$this->filename = $filename;
 		$this->addHeading = $addHeading;
 	}
-	
+
 	/**
 	 * Set value separator. Deprecated, use setDelimiter instead. Just for backward compatibility.
-	 * 
-	 * @deprecated since version 0.2.0
-	 * 
+	 *
 	 * @param string $glue
-	 * 
+	 *
 	 * @return CsvResponse
+	 * @deprecated since version 0.2.0
+	 *
 	 */
 	public function setGlue(string $glue): CsvResponse
 	{
@@ -120,7 +121,7 @@ class CsvResponse implements Nette\Application\IResponse
 	 * Set value separator.
 	 *
 	 * @param string $delimiter
-	 * 
+	 *
 	 * @return CsvResponse
 	 * @throws InvalidArgumentException
 	 */
@@ -132,12 +133,12 @@ class CsvResponse implements Nette\Application\IResponse
 		$this->delimiter = $delimiter;
 		return $this;
 	}
-	
+
 	/**
 	 * Set value enclosure.
 	 *
 	 * @param string $enclosure
-	 * 
+	 *
 	 * @return CsvResponse
 	 * @throws InvalidArgumentException
 	 */
@@ -149,12 +150,12 @@ class CsvResponse implements Nette\Application\IResponse
 		$this->enclosure = $enclosure;
 		return $this;
 	}
-	
+
 	/**
 	 * Set escape char.
-	 * 
+	 *
 	 * @param string $escapeChar
-	 * 
+	 *
 	 * @return CsvResponse
 	 * @throws InvalidArgumentException
 	 */
@@ -169,9 +170,9 @@ class CsvResponse implements Nette\Application\IResponse
 
 	/**
 	 * Set charset of response.
-	 * 
+	 *
 	 * @param string $charset
-	 * 
+	 *
 	 * @return CsvResponse
 	 */
 	public function setOutputCharset(string $charset): CsvResponse
@@ -184,7 +185,7 @@ class CsvResponse implements Nette\Application\IResponse
 	 * Set content type of response.
 	 *
 	 * @param string $contentType
-	 * 
+	 *
 	 * @return CsvResponse
 	 */
 	public function setContentType(string $contentType): CsvResponse
@@ -195,12 +196,12 @@ class CsvResponse implements Nette\Application\IResponse
 
 	/**
 	 * When heading added, it is formatted by given callback.
-	 * Default @see firstUpperNoUnderscoresFormatter(); erase it by calling setHeadingFormatter(null).
+	 * Default @param callable|null $formatter
 	 *
-	 * @param callable|null $formatter
-	 * 
 	 * @return CsvResponse
 	 * @throws InvalidArgumentException
+	 * @see firstUpperNoUnderscoresFormatter(); erase it by calling setHeadingFormatter(null).
+	 *
 	 */
 	public function setHeadingFormatter(?callable $formatter): CsvResponse
 	{
@@ -215,7 +216,7 @@ class CsvResponse implements Nette\Application\IResponse
 	 * If given, every value is formatted by given callback.
 	 *
 	 * @param callable|null $formatter
-	 * 
+	 *
 	 * @return CsvResponse
 	 * @throws InvalidArgumentException
 	 */
@@ -230,9 +231,9 @@ class CsvResponse implements Nette\Application\IResponse
 
 	/**
 	 * Heading formatted.
-	 * 
+	 *
 	 * @param string $heading
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function firstUpperNoUnderscoresFormatter(string $heading): string
@@ -245,7 +246,7 @@ class CsvResponse implements Nette\Application\IResponse
 	/**
 	 * Sends response to output.
 	 *
-	 * @param Nette\Http\IRequest $httpRequest
+	 * @param Nette\Http\IRequest  $httpRequest
 	 * @param Nette\Http\IResponse $httpResponse
 	 */
 	public function send(Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse)
@@ -263,7 +264,7 @@ class CsvResponse implements Nette\Application\IResponse
 
 	/**
 	 * Format CSV.
-	 * 
+	 *
 	 * @return string
 	 * @throws InvalidArgumentException
 	 * @throws LogicException
@@ -298,13 +299,13 @@ class CsvResponse implements Nette\Application\IResponse
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Get formatted and recoded header (if formatter and recode is set - if not not changed data will be returned).
-	 * 
+	 *
 	 * @param array $row
-	 * @param int $recode
-	 * 
+	 * @param int   $recode
+	 *
 	 * @return array
 	 */
 	protected function getRowHeader(array $row, int $recode): array
@@ -322,13 +323,13 @@ class CsvResponse implements Nette\Application\IResponse
 		}
 		return $labels;
 	}
-	
+
 	/**
 	 * Get formatted and recoded values (if formatter and recode is set - if not not changed data will be returned).
-	 * 
+	 *
 	 * @param array $row
-	 * @param int $recode
-	 * 
+	 * @param int   $recode
+	 *
 	 * @return array
 	 */
 	protected function getRowData(array $row, int $recode): array
